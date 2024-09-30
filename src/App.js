@@ -1,24 +1,40 @@
-import logo from './logo.svg';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { useGLTF } from "@react-three/drei";
 import './App.css';
+import { Suspense, useEffect, useRef } from 'react';
+import { OrbitControls } from '@react-three/drei';
+import * as THREE from 'three';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Canvas camera={{ position: [50, 80, 50] }}>
+        <Suspense fallback={null}> 
+          <ambientLight intensity={0.7} />
+          <Modal />
+        </Suspense>
+        <OrbitControls />
+      </Canvas>
     </div>
+  );
+}
+
+function Modal() {
+  const { scene, nodes } = useGLTF("/dell_3d_changi_campus_new_compressed.glb");
+  const ref = useRef();
+
+  useEffect(() => {
+    // Calculate the bounding box and center the model after it loads
+    const box = new THREE.Box3().setFromObject(scene); // Calculate bounding box
+    const center = box.getCenter(new THREE.Vector3()); // Get the center of the bounding box
+    scene.position.sub(center); // Center the model
+  }, [scene]);
+
+  console.log("nodes: ", nodes);
+  console.log("scene: ", scene);
+
+  return (
+    <primitive object={scene} position={[0, 0, 0]} ref={ref} />
   );
 }
 
