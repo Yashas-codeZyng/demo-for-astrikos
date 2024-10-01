@@ -42,20 +42,23 @@ function Modal({ onPanelClick }) { // Receive the prop
     nodes["Scene"].position.sub(center); // Center the model
   }, [nodes["Scene"]]);
 
-  console.log("nodes: ", nodes);
+  // console.log("nodes: ", nodes);
 
   const handleClick = (event) => {
+    event.stopPropagation();
     if (event.intersections.length) {
       const clickedObject = event.intersections[0].object;
-      if (clickedObject === nodes["data_sit_02_83"]) {
-        console.log('nodes["data_sit_02_83"] was clicked');
-        onPanelClick(true); // Call the function to update the parent state
+      // console.log("ClickedObject: ",clickedObject);
+      if (clickedObject === nodes["data_sit_02_83"] || clickedObject === nodes["data_sit_02_82"]) {
+        onPanelClick(prevState=>!prevState); // Call the function to update the parent state
       }
     }
   };
 
   return (
+    <>
     <primitive object={nodes["Scene"]} position={[0, 0, 0]} ref={ref} onClick={handleClick} castShadow={true} />
+    </>
   );
 }
 function DirectionalLightHelper({ position }) {
